@@ -3,7 +3,7 @@ import play.api.libs.json._
 import fr.esgi.al.funprog.CoupleMowerSnapshot
 
 object MyObject {
-  trait Data[E, T, K] {
+  trait Data[E, T, K, H] {
     def formatData(
         limitX: Int,
         limitY: Int,
@@ -13,7 +13,7 @@ object MyObject {
     def genetateMowerData(
         mowerListe: List[CoupleMowerSnapshot],
         result: T
-    ): List[E]
+    ): H
 
     def mowerData(
         startX: Int,
@@ -27,7 +27,8 @@ object MyObject {
 
   }
 
-  implicit object JSONData extends Data[JsValue, List[JsValue], JsValue] {
+  implicit object JSONData
+      extends Data[JsValue, List[JsValue], JsValue, List[JsValue]] {
 
     def formatData(
         limitX: Int,
@@ -99,7 +100,18 @@ object MyObject {
     }
   }
 
-  implicit object CSVData extends Data[String, List[String], List[String]] {
+  implicit object CSVData extends Data[String, String, String, String] {
+
+    def formatCSVAction(listAction: List[String], res: String): String =
+      listAction match {
+
+        case head :: tail =>
+          val newRes: String = res + head
+          formatCSVAction(tail, newRes)
+
+        case _ => res
+
+      }
 
     def mowerData(
         startX: Int,
@@ -112,18 +124,21 @@ object MyObject {
     ): String = {
 
       val stringData
-          : String = startX.toString + ";" + startY.toString + ";" + startOrientation + ";" + endX.toString + ";" + endY.toString + ";" + endOrientation + ";" + action.toString
+          : String = startX.toString + ";" + startY.toString + ";" + startOrientation + ";" + endX.toString + ";" + endY.toString + ";" + endOrientation + ";" + formatCSVAction(
+        action,
+        ""
+      ) + "\n"
 
       stringData
     }
 
     def genetateMowerData(
         mowerListe: List[CoupleMowerSnapshot],
-        res: List[String]
-    ): List[String] = mowerListe match {
+        res: String
+    ): String = mowerListe match {
 
       case head :: tail =>
-        val newLigne = res.length.toString + ";" + mowerData(
+        val newLigne = mowerListe.length.toString + ";" + mowerData(
           head.mowerSnapshot1.x,
           head.mowerSnapshot1.y,
           head.mowerSnapshot1.orientation,
@@ -132,22 +147,22 @@ object MyObject {
           head.mowerSnapshot2.orientation,
           head.mowerSnapshot1.parcourt
         )
-        val newRes: List[String] = newLigne :: res
+        val newRes: String = newLigne + res
         genetateMowerData(tail, newRes)
 
-      case _ => res.reverse
+      case _ => res
     }
 
     def formatData(
         limitX: Int,
         limitY: Int,
         mowerListe: List[CoupleMowerSnapshot]
-    ): List[String] = {
+    ): String = {
 
-      val firstLigne =
-        "numéro;début_x;début_y;début_direction;fin_x;fin_y;fin_direction;instructions;limitX:" + limitX.toString + ";" + "limitY:" + limitY.toString
-      val nextLigne: List[String] = genetateMowerData(mowerListe, List())
-      firstLigne :: nextLigne
+      val firstLigne: String =
+        "numéro;début_x;début_y;début_direction;fin_x;fin_y;fin_direction;instructions;limitX:" + limitX.toString + ";" + "limitY:" + limitY.toString + "\n"
+      val nextLigne: String = genetateMowerData(mowerListe, "")
+      firstLigne + nextLigne
     }
 
   }
