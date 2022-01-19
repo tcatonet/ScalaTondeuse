@@ -1,10 +1,11 @@
 package fr.esgi.al.funprog
 import data.MyObject
-import test.TestObject
+//import test.TestObject
 import play.api.libs.json._
 
 object Main extends App {
 
+  
   println("Ici le programme principal")
 
   val env = new Env()
@@ -37,6 +38,6 @@ object Main extends App {
       listCoupleMowerSnapshot
     )
   println(dataCSV)
-
-  TestObject.testProg()
+   
+  //TestObject.testProg()
 }

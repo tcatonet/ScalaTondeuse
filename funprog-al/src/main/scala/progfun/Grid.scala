@@ -27,6 +27,7 @@ class Grid(val x: Int, val y: Int) {
       case "E" => 1
       case "S" => 2
       case "W" => 3
+      case _   => -1
 
     }
 
@@ -39,6 +40,7 @@ class Grid(val x: Int, val y: Int) {
       case 1 => "E"
       case 2 => "S"
       case 3 => "W"
+      case _ => ""
 
     }
 
@@ -72,6 +74,7 @@ class Grid(val x: Int, val y: Int) {
         } else {
           2
         }
+      case _ => -1
 
     }
 

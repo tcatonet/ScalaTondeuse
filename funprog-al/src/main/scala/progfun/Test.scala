@@ -85,13 +85,6 @@ class Test(
       input: String,
       expectedResult: String
   ): Boolean = {
-    println(input)
-    println(expectedResult)
-
-    println("TEST:")
-    println(
-      "numéro;début_x;début_y;début_direction;fin_x;fin_y;fin_direction;instructions;limitX:5;limitY:5\n2;3;3;E;5;1;E;AADAADADDA\n1;1;2;N;1;3;N;GAGAGAGAA" == "numéro;début_x;début_y;début_direction;fin_x;fin_y;fin_direction;instructions;limitX:5;limitY:5\n2;3;3;E;5;1;E;AADAADADDA\n1;1;2;N;1;3;N;GAGAGAGAA"
-    )
     input == expectedResult
   }
 
@@ -116,6 +109,8 @@ class Test(
         this.env.limitY,
         listCoupleMowerSnapshot
       )
+
+    println(dataJson)
     assertJson(dataJson, expectedResult)
   }
 
@@ -140,6 +135,8 @@ class Test(
         env.limitY,
         listCoupleMowerSnapshot
       )
+    println(dataCSV)
+
     assertCSV(dataCSV, expectedResult)
 
   }
